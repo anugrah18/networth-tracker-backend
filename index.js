@@ -6,8 +6,15 @@ const PORT = process.env.port || 8080;
 
 const Log = require("./models/Log");
 
-app.get("/", async(req, res) => {
-  const result = await Log.create({log_time:"test-time",log_text:"random-text"})
+app.get("/test", async(req, res) => {
+  var datetime = new Date().toISOString();
+  const result = await Log.create({log_time:datetime,log_text:"test-log"})
+  if (result) {
+  return res.send("Logged data to DB");
+  }
+});
+
+app.get("/", async(req, res) => {  
   return res.send("Networth tracker API");
 });
 

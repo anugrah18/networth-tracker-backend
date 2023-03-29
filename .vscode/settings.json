@@ -3,5 +3,7 @@
         "node_modules{,/**}",
         ".vscode{,/**}",
         ".env{,/**}"
-    ]
+    ],
+    "appService.defaultWebAppToDeploy": "/subscriptions/e5c8a36a-d320-472e-bd33-405f74ab0e5b/resourceGroups/networth-tracker_group-8f09/providers/Microsoft.Web/sites/networth-tracker",
+    "appService.deploySubpath": "."
 }
