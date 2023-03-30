@@ -10,25 +10,7 @@ app.use(bodyParser.json());
 
 const PORT = process.env.port || 8080;
 
-app.get("/", async (req, res) => {
-  return res.send("Networth tracker API");
-});
-
-//Item Type Route
-app.use("/api/itemtypes", itemTypeRoute);
-
-app.listen(PORT, async () => {
-  console.log(`Server running on PORT ${PORT}`);
-
-  sequelize
-    .authenticate()
-    .then(() => {
-      console.log("Database successfully connected");
-    })
-    .catch((err) => {
-      console.log(err);
-    });
-
+function DBSync() {
   sequelize
     .sync()
     .then((result) => {
@@ -40,4 +22,30 @@ app.listen(PORT, async () => {
       console.log("Database unable to sync");
       console.log(err);
     });
+}
+
+function DBConnect() {
+  sequelize
+    .authenticate()
+    .then(() => {
+      console.log("Database successfully connected");
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+}
+
+DBConnect();
+
+DBSync();
+
+app.get("/", async (req, res) => {
+  return res.send("Networth tracker API");
+});
+
+//Item Type Route
+app.use("/api/itemtypes", itemTypeRoute);
+
+app.listen(PORT, async () => {
+  console.log(`Server running on PORT ${PORT}`);
 });
