@@ -1,20 +1,17 @@
 const Sequelize = require("sequelize");
 const sequelize = require("../utils/database");
 
-const Log = sequelize.define("Logging", {
-  id: {
+const ItemType = sequelize.define("ItemType", {
+  itemTypeId: {
     type: Sequelize.INTEGER,
     autoIncrement: true,
     allowNull: false,
     primaryKey: true,
   },
-  log_time: {
+  itemCategory: {
     type: Sequelize.STRING,
     allowNull: false,
   },
-  log_text: {
-    type: Sequelize.STRING,
-  },
 });
 
-module.exports = Log;
+module.exports = ItemType;
