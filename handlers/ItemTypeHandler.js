@@ -7,6 +7,7 @@ const getAllItemTypesHandler = expressAsyncHandler(async (req, res) => {
   try {
     const itemTypes = await ItemType.findAll({
       attributes: ["itemTypeId", "itemCategory"],
+      order: ["createdAt"],
     });
     return res.json(itemTypes);
   } catch (error) {
