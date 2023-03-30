@@ -79,9 +79,37 @@ const deleteItemTypeHandler = expressAsyncHandler(async (req, res) => {
   }
 });
 
+//Update an item type.
+const updateItemTypeHandler = expressAsyncHandler(async (req, res) => {
+  try {
+    ID = req.params.id;
+    const { itemCategory } = req.body;
+    const updatedItemType = await ItemType.update(
+      { itemCategory: itemCategory },
+      { where: { itemTypeId: ID } }
+    );
+
+    if (updatedItemType == 0) {
+      return responseWithStatus(
+        res,
+        `Not found any Item Type to update with id : ${ID}`,
+        404
+      );
+    }
+
+    return responseWithStatus(
+      res,
+      `Successfully updated Item Type with id : ${ID}`
+    );
+  } catch (error) {
+    return responseWithStatus(res, error.message, 400);
+  }
+});
+
 module.exports = {
   getAllItemTypesHandler,
   getItemTypeHandler,
   createItemTypeHandler,
   deleteItemTypeHandler,
+  updateItemTypeHandler,
 };
