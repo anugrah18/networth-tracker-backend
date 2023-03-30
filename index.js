@@ -1,8 +1,13 @@
 const express = require("express");
+const bodyParser = require("body-parser");
 const itemTypeRoute = require("./routes/ItemType");
 const sequelize = require("./utils/database");
 
 const app = express();
+
+app.use(express.json());
+app.use(bodyParser.json());
+
 const PORT = process.env.port || 8080;
 
 app.get("/", async (req, res) => {
