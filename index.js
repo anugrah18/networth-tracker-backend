@@ -1,14 +1,21 @@
 const express = require("express");
+const bodyParser = require("body-parser");
+const itemTypeRoute = require("./routes/ItemType");
 const sequelize = require("./utils/database");
 
 const app = express();
-const PORT = process.env.port || 8080;
 
-const ItemType = require("./models/ItemType");
+app.use(express.json());
+app.use(bodyParser.json());
+
+const PORT = process.env.port || 8080;
 
 app.get("/", async (req, res) => {
   return res.send("Networth tracker API");
 });
+
+//Item Type Route
+app.use("/api/itemtypes", itemTypeRoute);
 
 app.listen(PORT, async () => {
   console.log(`Server running on PORT ${PORT}`);
