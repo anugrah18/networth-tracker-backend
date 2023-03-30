@@ -14,7 +14,7 @@ const getAllItemTypesHandler = expressAsyncHandler(async (req, res) => {
   }
 });
 
-// Get an item type.
+//Get an item type.
 const getItemTypeHandler = expressAsyncHandler(async (req, res) => {
   try {
     itemTypeId = req.params.id;
@@ -52,8 +52,36 @@ const createItemTypeHandler = expressAsyncHandler(async (req, res) => {
   }
 });
 
+//Delete an item type.
+const deleteItemTypeHandler = expressAsyncHandler(async (req, res) => {
+  try {
+    ID = req.params.id;
+    const deletedItemType = await ItemType.destroy({
+      where: {
+        itemTypeId: ID,
+      },
+    });
+
+    if (deletedItemType === 0) {
+      return responseWithStatus(
+        res,
+        `Not found any Item Type to delete with id : ${ID}`,
+        404
+      );
+    }
+
+    return responseWithStatus(
+      res,
+      `Successfully deleted Item Type with id : ${ID}`
+    );
+  } catch (error) {
+    return responseWithStatus(res, error.message, 400);
+  }
+});
+
 module.exports = {
   getAllItemTypesHandler,
   getItemTypeHandler,
   createItemTypeHandler,
+  deleteItemTypeHandler,
 };
