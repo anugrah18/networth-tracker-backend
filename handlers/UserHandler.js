@@ -94,9 +94,37 @@ const deleteUserHandler = expressAsyncHandler(async (req, res) => {
   }
 });
 
+//Update an user.
+const updateUserHandler = expressAsyncHandler(async (req, res) => {
+  try {
+    ID = req.params.id;
+    const { firstName, lastName } = req.body;
+    const updatedUser = await User.update(
+      { firstName: firstName, lastName: lastName },
+      {
+        where: {
+          userId: ID,
+        },
+      }
+    );
+
+    if (updatedUser == 0) {
+      return responseWithStatus(
+        res,
+        `Not found any User to update with id : ${ID}`,
+        404
+      );
+    }
+    return responseWithStatus(res, `Successfully updated User with id : ${ID}`);
+  } catch (error) {
+    return responseWithStatus(res, error.message, 400);
+  }
+});
+
 module.exports = {
   getAllUsersHandler,
   getUserHandler,
   createUserHandler,
   deleteUserHandler,
+  updateUserHandler,
 };
