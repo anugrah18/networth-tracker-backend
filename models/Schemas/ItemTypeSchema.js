@@ -1,7 +1,5 @@
 const Sequelize = require("sequelize");
-const sequelize = require("../utils/database");
-
-const ItemType = sequelize.define("ItemType", {
+const ItemType = {
   itemTypeId: {
     type: Sequelize.INTEGER,
     autoIncrement: true,
@@ -12,6 +10,6 @@ const ItemType = sequelize.define("ItemType", {
     type: Sequelize.STRING,
     allowNull: false,
   },
-});
+};
 
 module.exports = ItemType;

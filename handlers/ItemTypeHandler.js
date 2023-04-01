@@ -1,5 +1,5 @@
 const expressAsyncHandler = require("express-async-handler");
-const ItemType = require("../models/ItemType");
+const { ItemType } = require("../models/ModelsDefine");
 const responseWithStatus = require("../utils/responseTemplate");
 
 //Get all item types.

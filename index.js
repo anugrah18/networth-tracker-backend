@@ -1,7 +1,9 @@
 const express = require("express");
 const bodyParser = require("body-parser");
 const itemTypeRoute = require("./routes/ItemType");
-const sequelize = require("./utils/database");
+const DBSync = require("./utils/Database/DBSync");
+const DBConnect = require("./utils/Database/DBConnect");
+const userRoute = require("./routes/User");
 
 const app = express();
 
@@ -9,31 +11,6 @@ app.use(express.json());
 app.use(bodyParser.json());
 
 const PORT = process.env.port || 8080;
-
-function DBSync() {
-  sequelize
-    .sync()
-    .then((result) => {
-      if (result) {
-        console.log("Database successfully synced");
-      }
-    })
-    .catch((err) => {
-      console.log("Database unable to sync");
-      console.log(err);
-    });
-}
-
-function DBConnect() {
-  sequelize
-    .authenticate()
-    .then(() => {
-      console.log("Database successfully connected");
-    })
-    .catch((err) => {
-      console.log(err);
-    });
-}
 
 DBConnect();
 
@@ -45,6 +22,9 @@ app.get("/", async (req, res) => {
 
 //Item Type Route
 app.use("/api/itemtypes", itemTypeRoute);
+
+//User Route
+app.use("/api/users", userRoute);
 
 app.listen(PORT, async () => {
   console.log(`Server running on PORT ${PORT}`);
