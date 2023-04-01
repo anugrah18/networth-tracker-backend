@@ -37,10 +37,23 @@ const getUserHandler = expressAsyncHandler(async (req, res) => {
   }
 });
 
-//Create a user.
+//Create an user.
 const createUserHandler = expressAsyncHandler(async (req, res) => {
   try {
     const { firstName, lastName, email, password } = req.body;
+    const emailPresentInDB = await User.findOne({
+      where: { email: email },
+      attributes: ["email"],
+    });
+
+    if (emailPresentInDB !== null) {
+      return responseWithStatus(
+        res,
+        `User already exists with the email : ${email}`,
+        409
+      );
+    }
+
     const user = await User.create({
       firstName: firstName,
       lastName: lastName,
@@ -57,8 +70,33 @@ const createUserHandler = expressAsyncHandler(async (req, res) => {
   }
 });
 
+//Delete an user.
+const deleteUserHandler = expressAsyncHandler(async (req, res) => {
+  try {
+    ID = req.params.id;
+    const deletedUser = await User.destroy({
+      where: {
+        userId: ID,
+      },
+    });
+
+    if (deletedUser === 0) {
+      return responseWithStatus(
+        res,
+        `Not found any user to delete with id : ${ID}`,
+        404
+      );
+    }
+
+    return responseWithStatus(res, `Successfully deleted User with id : ${ID}`);
+  } catch (error) {
+    return responseWithStatus(res, error.message, 400);
+  }
+});
+
 module.exports = {
   getAllUsersHandler,
   getUserHandler,
   createUserHandler,
+  deleteUserHandler,
 };
