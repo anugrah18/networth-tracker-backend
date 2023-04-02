@@ -12,4 +12,13 @@ const generateHashPassword = async (plainTextPassword) => {
   }
 };
 
-module.exports = generateHashPassword;
+const passwordMatching = async (plainTextPassword, hashedPassword) => {
+  try {
+    const result = await bcrypt.compare(plainTextPassword, hashedPassword);
+    return result;
+  } catch (error) {
+    return false;
+  }
+};
+
+module.exports = { generateHashPassword, passwordMatching };

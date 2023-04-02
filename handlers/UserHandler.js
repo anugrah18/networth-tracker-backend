@@ -1,7 +1,10 @@
 const expressAsyncHandler = require("express-async-handler");
 const responseWithStatus = require("../utils/responseTemplate");
 const { User } = require("../models/ModelsDefine");
-const generateHashPassword = require("../utils/Auth/passwordUtils");
+const {
+  generateHashPassword,
+  passwordMatching,
+} = require("../utils/Auth/passwordUtils");
 
 //Get all users.
 const getAllUsersHandler = expressAsyncHandler(async (req, res) => {
@@ -125,10 +128,45 @@ const updateUserHandler = expressAsyncHandler(async (req, res) => {
   }
 });
 
+//Login a user
+const loginUserHandler = expressAsyncHandler(async (req, res) => {
+  try {
+    const { email, password } = req.body;
+
+    const userFound = await User.findOne({
+      where: { email: email },
+      attributes: [
+        "userId",
+        "firstName",
+        "lastName",
+        "email",
+        "isAdmin",
+        "password",
+      ],
+    });
+
+    if (userFound && (await passwordMatching(password, userFound.password))) {
+      const user = {
+        userId: userFound.userId,
+        firstName: userFound.firstName,
+        lastName: userFound.lastName,
+        email: userFound.email,
+        isAdmin: userFound.isAdmin,
+      };
+      return res.json(user);
+    }
+
+    return responseWithStatus(res, "Invalid credentials", 401);
+  } catch (error) {
+    return responseWithStatus(res, error.message, 400);
+  }
+});
+
 module.exports = {
   getAllUsersHandler,
   getUserHandler,
   createUserHandler,
   deleteUserHandler,
   updateUserHandler,
+  loginUserHandler,
 };
