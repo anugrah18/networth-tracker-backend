@@ -1,6 +1,7 @@
 const expressAsyncHandler = require("express-async-handler");
 const responseWithStatus = require("../utils/responseTemplate");
 const { User } = require("../models/ModelsDefine");
+const generateHashPassword = require("../utils/Auth/passwordUtils");
 
 //Get all users.
 const getAllUsersHandler = expressAsyncHandler(async (req, res) => {
@@ -41,6 +42,9 @@ const getUserHandler = expressAsyncHandler(async (req, res) => {
 const createUserHandler = expressAsyncHandler(async (req, res) => {
   try {
     const { firstName, lastName, email, password } = req.body;
+
+    const hashedPassword = await generateHashPassword(password);
+
     const emailPresentInDB = await User.findOne({
       where: { email: email },
       attributes: ["email"],
@@ -58,7 +62,7 @@ const createUserHandler = expressAsyncHandler(async (req, res) => {
       firstName: firstName,
       lastName: lastName,
       email: email,
-      password: password,
+      password: hashedPassword,
     });
 
     return responseWithStatus(
