@@ -120,6 +120,12 @@ const deleteUserHandler = expressAsyncHandler(async (req, res) => {
 const updateUserHandler = expressAsyncHandler(async (req, res) => {
   try {
     ID = req.params.id;
+
+    //If user does not match logged in user or is not an admin.
+    if (ID != req.user.userId && !req.user.isAdmin) {
+      return responseWithStatus(res, "Not authorized", 401);
+    }
+
     const { firstName, lastName } = req.body;
     const updatedUser = await User.update(
       { firstName: firstName, lastName: lastName },
