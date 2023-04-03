@@ -39,6 +39,11 @@ const getItemTypeHandler = expressAsyncHandler(async (req, res) => {
 //Create an item type.
 const createItemTypeHandler = expressAsyncHandler(async (req, res) => {
   try {
+    //If user is not an admin.
+    if (!req.user.isAdmin) {
+      return responseWithStatus(res, "Not authorized", 401);
+    }
+
     const { itemCategory } = req.body;
     const itemType = await ItemType.create({
       itemCategory: itemCategory,
@@ -56,6 +61,11 @@ const createItemTypeHandler = expressAsyncHandler(async (req, res) => {
 //Delete an item type.
 const deleteItemTypeHandler = expressAsyncHandler(async (req, res) => {
   try {
+    //If user is not an admin.
+    if (!req.user.isAdmin) {
+      return responseWithStatus(res, "Not authorized", 401);
+    }
+
     ID = req.params.id;
     const deletedItemType = await ItemType.destroy({
       where: {
@@ -83,6 +93,11 @@ const deleteItemTypeHandler = expressAsyncHandler(async (req, res) => {
 //Update an item type.
 const updateItemTypeHandler = expressAsyncHandler(async (req, res) => {
   try {
+    //If user is not an admin.
+    if (!req.user.isAdmin) {
+      return responseWithStatus(res, "Not authorized", 401);
+    }
+
     ID = req.params.id;
     const { itemCategory } = req.body;
     const updatedItemType = await ItemType.update(

@@ -6,12 +6,13 @@ const {
   deleteItemTypeHandler,
   updateItemTypeHandler,
 } = require("../handlers/ItemTypeHandler");
+const authMiddleware = require("../middlewares/auth/authMiddleware");
 const itemTypeRoute = express.Router();
 
 itemTypeRoute.get("/", getAllItemTypesHandler);
 itemTypeRoute.get("/:id", getItemTypeHandler);
-itemTypeRoute.post("/", createItemTypeHandler);
-itemTypeRoute.delete("/:id", deleteItemTypeHandler);
-itemTypeRoute.put("/:id", updateItemTypeHandler);
+itemTypeRoute.post("/", authMiddleware, createItemTypeHandler);
+itemTypeRoute.delete("/:id", authMiddleware, deleteItemTypeHandler);
+itemTypeRoute.put("/:id", authMiddleware, updateItemTypeHandler);
 
 module.exports = itemTypeRoute;

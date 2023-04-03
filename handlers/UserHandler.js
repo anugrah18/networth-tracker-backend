@@ -1,10 +1,20 @@
 const expressAsyncHandler = require("express-async-handler");
 const responseWithStatus = require("../utils/responseTemplate");
 const { User } = require("../models/ModelsDefine");
+const {
+  generateHashPassword,
+  passwordMatching,
+} = require("../utils/Auth/passwordUtils");
+const generateToken = require("../utils/Auth/tokenUtils");
 
 //Get all users.
 const getAllUsersHandler = expressAsyncHandler(async (req, res) => {
   try {
+    //If user is not an admin.
+    if (!req.user.isAdmin) {
+      return responseWithStatus(res, "Not authorized", 401);
+    }
+
     const users = await User.findAll({
       attributes: ["userId", "firstName", "lastName", "email", "isAdmin"],
       order: ["createdAt"],
@@ -20,6 +30,11 @@ const getAllUsersHandler = expressAsyncHandler(async (req, res) => {
 const getUserHandler = expressAsyncHandler(async (req, res) => {
   try {
     const userId = req.params.id;
+
+    //If user does not match logged in user or is not an admin.
+    if (userId != req.user.userId && !req.user.isAdmin) {
+      return responseWithStatus(res, "Not authorized", 401);
+    }
 
     const user = await User.findByPk(userId, {
       attributes: ["userId", "firstName", "lastName", "email", "isAdmin"],
@@ -41,6 +56,9 @@ const getUserHandler = expressAsyncHandler(async (req, res) => {
 const createUserHandler = expressAsyncHandler(async (req, res) => {
   try {
     const { firstName, lastName, email, password } = req.body;
+
+    const hashedPassword = await generateHashPassword(password);
+
     const emailPresentInDB = await User.findOne({
       where: { email: email },
       attributes: ["email"],
@@ -58,7 +76,7 @@ const createUserHandler = expressAsyncHandler(async (req, res) => {
       firstName: firstName,
       lastName: lastName,
       email: email,
-      password: password,
+      password: hashedPassword,
     });
 
     return responseWithStatus(
@@ -73,6 +91,10 @@ const createUserHandler = expressAsyncHandler(async (req, res) => {
 //Delete an user.
 const deleteUserHandler = expressAsyncHandler(async (req, res) => {
   try {
+    //If user is not an admin.
+    if (!req.user.isAdmin) {
+      return responseWithStatus(res, "Not authorized", 401);
+    }
     ID = req.params.id;
     const deletedUser = await User.destroy({
       where: {
@@ -98,6 +120,12 @@ const deleteUserHandler = expressAsyncHandler(async (req, res) => {
 const updateUserHandler = expressAsyncHandler(async (req, res) => {
   try {
     ID = req.params.id;
+
+    //If user does not match logged in user or is not an admin.
+    if (ID != req.user.userId && !req.user.isAdmin) {
+      return responseWithStatus(res, "Not authorized", 401);
+    }
+
     const { firstName, lastName } = req.body;
     const updatedUser = await User.update(
       { firstName: firstName, lastName: lastName },
@@ -121,10 +149,46 @@ const updateUserHandler = expressAsyncHandler(async (req, res) => {
   }
 });
 
+//Login a user
+const loginUserHandler = expressAsyncHandler(async (req, res) => {
+  try {
+    const { email, password } = req.body;
+
+    const userFound = await User.findOne({
+      where: { email: email },
+      attributes: [
+        "userId",
+        "firstName",
+        "lastName",
+        "email",
+        "isAdmin",
+        "password",
+      ],
+    });
+
+    if (userFound && (await passwordMatching(password, userFound.password))) {
+      const user = {
+        userId: userFound.userId,
+        firstName: userFound.firstName,
+        lastName: userFound.lastName,
+        email: userFound.email,
+        isAdmin: userFound.isAdmin,
+        token: generateToken(userFound.userId),
+      };
+      return res.json(user);
+    }
+
+    return responseWithStatus(res, "Invalid credentials", 401);
+  } catch (error) {
+    return responseWithStatus(res, error.message, 400);
+  }
+});
+
 module.exports = {
   getAllUsersHandler,
   getUserHandler,
   createUserHandler,
   deleteUserHandler,
   updateUserHandler,
+  loginUserHandler,
 };
