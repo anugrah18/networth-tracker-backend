@@ -5,6 +5,7 @@ const {
   generateHashPassword,
   passwordMatching,
 } = require("../utils/Auth/passwordUtils");
+const generateToken = require("../utils/Auth/tokenUtils");
 
 //Get all users.
 const getAllUsersHandler = expressAsyncHandler(async (req, res) => {
@@ -152,6 +153,7 @@ const loginUserHandler = expressAsyncHandler(async (req, res) => {
         lastName: userFound.lastName,
         email: userFound.email,
         isAdmin: userFound.isAdmin,
+        token: generateToken(userFound.userId),
       };
       return res.json(user);
     }
