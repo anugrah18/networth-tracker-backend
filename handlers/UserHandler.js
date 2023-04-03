@@ -91,6 +91,10 @@ const createUserHandler = expressAsyncHandler(async (req, res) => {
 //Delete an user.
 const deleteUserHandler = expressAsyncHandler(async (req, res) => {
   try {
+    //If user is not an admin.
+    if (!req.user.isAdmin) {
+      return responseWithStatus(res, "Not authorized", 401);
+    }
     ID = req.params.id;
     const deletedUser = await User.destroy({
       where: {

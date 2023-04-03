@@ -14,7 +14,7 @@ userRoute.get("/", authMiddleware, getAllUsersHandler);
 userRoute.get("/:id", authMiddleware, getUserHandler);
 userRoute.post("/", createUserHandler);
 userRoute.post("/login", loginUserHandler);
-userRoute.delete("/:id", deleteUserHandler);
+userRoute.delete("/:id", authMiddleware, deleteUserHandler);
 userRoute.put("/:id", updateUserHandler);
 
 module.exports = userRoute;
