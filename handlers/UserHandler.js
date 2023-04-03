@@ -10,6 +10,11 @@ const generateToken = require("../utils/Auth/tokenUtils");
 //Get all users.
 const getAllUsersHandler = expressAsyncHandler(async (req, res) => {
   try {
+    //If user is not an admin.
+    if (!req.user.isAdmin) {
+      return responseWithStatus(res, "Not authorized", 401);
+    }
+
     const users = await User.findAll({
       attributes: ["userId", "firstName", "lastName", "email", "isAdmin"],
       order: ["createdAt"],

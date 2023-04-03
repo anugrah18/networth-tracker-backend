@@ -10,7 +10,7 @@ const {
 const authMiddleware = require("../middlewares/auth/authMiddleware");
 const userRoute = express.Router();
 
-userRoute.get("/", getAllUsersHandler);
+userRoute.get("/", authMiddleware, getAllUsersHandler);
 userRoute.get("/:id", authMiddleware, getUserHandler);
 userRoute.post("/", createUserHandler);
 userRoute.post("/login", loginUserHandler);
