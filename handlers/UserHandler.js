@@ -26,6 +26,11 @@ const getUserHandler = expressAsyncHandler(async (req, res) => {
   try {
     const userId = req.params.id;
 
+    //If user does not match logged in user or is not an admin.
+    if (userId != req.user.userId && !req.user.isAdmin) {
+      return responseWithStatus(res, "Not authorized", 401);
+    }
+
     const user = await User.findByPk(userId, {
       attributes: ["userId", "firstName", "lastName", "email", "isAdmin"],
     });
