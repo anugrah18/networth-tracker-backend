@@ -9,13 +9,23 @@ const ItemType = sequelize.define("ItemType", ItemTypeSchema);
 const User = sequelize.define("User", UserSchema);
 //Record Table Definition.
 const Record = sequelize.define("Record", RecordSchema);
+//Item Record relationship.
 ItemType.hasOne(Record, {
   foreignKey: {
     name: "itemTypeId",
   },
 });
+Record.belongsTo(ItemType, {
+  foreignKey: {
+    name: "itemTypeId",
+  },
+});
 
+//User Record relationship.
 User.hasMany(Record, {
+  foreignKey: "userId",
+});
+Record.belongsTo(User, {
   foreignKey: "userId",
 });
 

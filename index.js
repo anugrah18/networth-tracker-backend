@@ -4,6 +4,7 @@ const itemTypeRoute = require("./routes/ItemType");
 const DBSync = require("./utils/Database/DBSync");
 const DBConnect = require("./utils/Database/DBConnect");
 const userRoute = require("./routes/User");
+const recordRoute = require("./routes/Record");
 
 const app = express();
 
@@ -25,6 +26,9 @@ app.use("/api/itemtypes", itemTypeRoute);
 
 //User Route
 app.use("/api/users", userRoute);
+
+//Record Route
+app.use("/api/records", recordRoute);
 
 app.listen(PORT, async () => {
   console.log(`Server running on PORT ${PORT}`);
