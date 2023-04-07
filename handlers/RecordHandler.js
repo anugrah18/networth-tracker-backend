@@ -47,11 +47,7 @@ const createRecordHandler = expressAsyncHandler(async (req, res) => {
 
     return responseWithStatus(res, "Record successfully created");
   } catch (error) {
-    return responseWithStatus(
-      res,
-      "Failed to create a record please check your request",
-      400
-    );
+    return responseWithStatus(res, error.message, 400);
   }
 });
 
@@ -79,7 +75,7 @@ const deleteRecordHandler = expressAsyncHandler(async (req, res) => {
       `Successfully deleted Record with id : ${recordId}`
     );
   } catch (error) {
-    return responseWithStatus(res, "Could not delete record", 400);
+    return responseWithStatus(res, error.message, 400);
   }
 });
 
@@ -118,7 +114,7 @@ const updateRecordHandler = expressAsyncHandler(async (req, res) => {
       `Successfully updated Record with id : ${recordId}`
     );
   } catch (error) {
-    return responseWithStatus(res, "Could not update record", 400);
+    return responseWithStatus(res, error.message, 400);
   }
 });
 
