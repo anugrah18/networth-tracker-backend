@@ -30,7 +30,7 @@ const getAllRecordsHandler = expressAsyncHandler(async (req, res) => {
   }
 });
 
-//Create one record
+//Create one record.
 const createRecordHandler = expressAsyncHandler(async (req, res) => {
   try {
     const { recordDate, itemDescription, itemValue, itemTypeId } = req.body;
@@ -55,4 +55,36 @@ const createRecordHandler = expressAsyncHandler(async (req, res) => {
   }
 });
 
-module.exports = { getAllRecordsHandler, createRecordHandler };
+//Delete a record.
+const deleteRecordHandler = expressAsyncHandler(async (req, res) => {
+  try {
+    const userID = req.user.userId;
+    const recordId = req.params.id;
+    const deletedRecord = await Record.destroy({
+      where: {
+        userId: parseInt(userID),
+        recordId: parseInt(recordId),
+      },
+    });
+
+    if (deletedRecord === 0) {
+      return responseWithStatus(
+        res,
+        `Not found any record with id : ${recordId}`
+      );
+    }
+
+    return responseWithStatus(
+      res,
+      `Successfully deleted Record with id : ${recordId}`
+    );
+  } catch (error) {
+    return responseWithStatus(res, "Could not delete record", 400);
+  }
+});
+
+module.exports = {
+  getAllRecordsHandler,
+  createRecordHandler,
+  deleteRecordHandler,
+};
