@@ -83,8 +83,48 @@ const deleteRecordHandler = expressAsyncHandler(async (req, res) => {
   }
 });
 
+//Update a record.
+const updateRecordHandler = expressAsyncHandler(async (req, res) => {
+  try {
+    const { recordDate, itemDescription, itemValue, itemTypeId } = req.body;
+
+    const userID = req.user.userId;
+    const recordId = req.params.id;
+
+    const updatedRecord = await Record.update(
+      {
+        recordDate: recordDate,
+        itemDescription: itemDescription,
+        itemValue: itemValue,
+        itemTypeId: itemTypeId,
+      },
+      {
+        where: {
+          userId: userID,
+          recordId: recordId,
+        },
+      }
+    );
+
+    if (updatedRecord == 0) {
+      return responseWithStatus(
+        res,
+        `Not found any Record to update with id : ${recordId}`,
+        404
+      );
+    }
+    return responseWithStatus(
+      res,
+      `Successfully updated Record with id : ${recordId}`
+    );
+  } catch (error) {
+    return responseWithStatus(res, "Could not update record", 400);
+  }
+});
+
 module.exports = {
   getAllRecordsHandler,
   createRecordHandler,
   deleteRecordHandler,
+  updateRecordHandler,
 };
