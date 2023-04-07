@@ -3,6 +3,7 @@ const jwt = require("jsonwebtoken");
 const { User } = require("../../models/ModelsDefine");
 const responseWithStatus = require("../../utils/responseTemplate");
 
+//Authorization middleware via jwt.
 const authMiddleware = expressAsyncHandler(async (req, res, next) => {
   let token;
 
