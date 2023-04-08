@@ -22,7 +22,7 @@ DBSync();
 app.get("/", async (req, res) => {
   return res.json({
     name: "Networth tracker API",
-    environment: DB_ENVIRONMENT === "prod" ? "production" : "development",
+    environment: DB_ENVIRONMENT === "prod" ? "Production" : "Development",
   });
 });
 
