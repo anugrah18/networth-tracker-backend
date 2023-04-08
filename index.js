@@ -6,6 +6,8 @@ const DBConnect = require("./utils/Database/DBConnect");
 const userRoute = require("./routes/User");
 const recordRoute = require("./routes/Record");
 
+const DB_ENVIRONMENT = process.env.APP_ENVIRONMENT || "prod";
+
 const app = express();
 
 app.use(express.json());
@@ -18,7 +20,10 @@ DBConnect();
 DBSync();
 
 app.get("/", async (req, res) => {
-  return res.send("Networth tracker API");
+  return res.json({
+    name: "Networth tracker API",
+    environment: DB_ENVIRONMENT === "prod" ? "Production" : "Development",
+  });
 });
 
 //Item Type Route
