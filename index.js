@@ -5,10 +5,12 @@ const DBSync = require("./utils/Database/DBSync");
 const DBConnect = require("./utils/Database/DBConnect");
 const userRoute = require("./routes/User");
 const recordRoute = require("./routes/Record");
+const cors = require("cors")
 
 const DB_ENVIRONMENT = process.env.APP_ENVIRONMENT || "prod";
 
 const app = express();
+app.use(cors());
 
 app.use(express.json());
 app.use(bodyParser.json());
