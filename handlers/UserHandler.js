@@ -52,6 +52,16 @@ const getUserHandler = expressAsyncHandler(async (req, res) => {
   }
 });
 
+//Get user ID
+const getUserIdHandler = expressAsyncHandler(async (req, res) => {
+  try {
+    const userId = req?.user?.userId;
+    return res.json({ userId: userId });
+  } catch (error) {
+    return responseWithStatus(res, error.message, 400);
+  }
+});
+
 //Create an user.
 const createUserHandler = expressAsyncHandler(async (req, res) => {
   try {
@@ -191,4 +201,5 @@ module.exports = {
   deleteUserHandler,
   updateUserHandler,
   loginUserHandler,
+  getUserIdHandler,
 };
