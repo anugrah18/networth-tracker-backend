@@ -6,6 +6,7 @@ const {
   deleteUserHandler,
   updateUserHandler,
   loginUserHandler,
+  getUserIdHandler,
 } = require("../handlers/UserHandler");
 const authMiddleware = require("../middlewares/auth/authMiddleware");
 const userRoute = express.Router();
@@ -16,5 +17,6 @@ userRoute.post("/", createUserHandler);
 userRoute.post("/login", loginUserHandler);
 userRoute.delete("/:id", authMiddleware, deleteUserHandler);
 userRoute.put("/:id", authMiddleware, updateUserHandler);
+userRoute.get("/user/id", authMiddleware, getUserIdHandler);
 
 module.exports = userRoute;
