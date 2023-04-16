@@ -5,7 +5,7 @@ const DBSync = require("./utils/Database/DBSync");
 const DBConnect = require("./utils/Database/DBConnect");
 const userRoute = require("./routes/User");
 const recordRoute = require("./routes/Record");
-const cors = require("cors")
+const cors = require("cors");
 
 const DB_ENVIRONMENT = process.env.APP_ENVIRONMENT || "prod";
 
