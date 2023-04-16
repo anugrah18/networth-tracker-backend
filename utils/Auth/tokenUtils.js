@@ -5,4 +5,8 @@ const generateToken = (id) => {
   return jwt.sign({ id }, process.env.JWT_TOKEN_KEY, { expiresIn: "30d" });
 };
 
-module.exports = generateToken;
+const generateResetPasswordToken = (id) => {
+  return jwt.sign({ id }, process.env.JWT_TOKEN_KEY, { expiresIn: "3d" });
+};
+
+module.exports = { generateToken, generateResetPasswordToken };

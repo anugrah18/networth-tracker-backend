@@ -7,11 +7,15 @@ const {
   updateUserHandler,
   loginUserHandler,
   getUserIdHandler,
+  forgotPasswordHandler,
+  resetPasswordHandler,
 } = require("../handlers/UserHandler");
 const authMiddleware = require("../middlewares/auth/authMiddleware");
 const userRoute = express.Router();
 
 userRoute.get("/", authMiddleware, getAllUsersHandler);
+userRoute.post("/password/forgot", forgotPasswordHandler);
+userRoute.post("/password/reset", authMiddleware, resetPasswordHandler);
 userRoute.get("/:id", authMiddleware, getUserHandler);
 userRoute.post("/", createUserHandler);
 userRoute.post("/login", loginUserHandler);
