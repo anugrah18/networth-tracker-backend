@@ -216,7 +216,7 @@ const forgotPasswordHandler = expressAsyncHandler(async (req, res) => {
 
       const emailStatus = await sendEmail(
         email,
-        "Reset password (My Financial App)",
+        "Reset password (My Financial Pal)",
         msg
       );
       console.log(emailStatus);
