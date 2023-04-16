@@ -5,7 +5,10 @@ const {
   generateHashPassword,
   passwordMatching,
 } = require("../utils/Auth/passwordUtils");
-const generateToken = require("../utils/Auth/tokenUtils");
+const {
+  generateResetPasswordToken,
+  generateToken,
+} = require("../utils/Auth/tokenUtils");
 
 //Get all users.
 const getAllUsersHandler = expressAsyncHandler(async (req, res) => {
@@ -194,6 +197,63 @@ const loginUserHandler = expressAsyncHandler(async (req, res) => {
   }
 });
 
+//Forgot Password Link
+const forgotPasswordHandler = expressAsyncHandler(async (req, res) => {
+  try {
+    const { email } = req.body;
+    const userFound = await User.findOne({
+      where: { email: email },
+      attributes: ["userId", "email"],
+    });
+
+    if (userFound !== null) {
+      const resetPasswordToken = generateResetPasswordToken(userFound.userId);
+      const webDomain =
+        process.env.PROD_FRONTEND_DNS || "http://localhost:3000";
+      const resetUrl = `${webDomain}/forgot-password/${resetPasswordToken}`;
+      const msg = `Please click on the following link to reset your password : ${resetUrl}`;
+
+      return res.json(msg);
+    }
+
+    return responseWithStatus(res, `${email} is not registered`, 404);
+  } catch (error) {
+    return responseWithStatus(res, error.message, 400);
+  }
+});
+
+//Reset Password
+const resetPasswordHandler = expressAsyncHandler(async (req, res) => {
+  try {
+    const { newPassword } = req.body;
+
+    const hashedPassword = await generateHashPassword(newPassword);
+
+    const updatedUser = await User.update(
+      { password: hashedPassword },
+      {
+        where: {
+          userId: req.user.userId,
+        },
+      }
+    );
+
+    if (updatedUser == 0) {
+      return responseWithStatus(
+        res,
+        `Could not update password for User with email : ${req.user.email}`,
+        404
+      );
+    }
+    return responseWithStatus(
+      res,
+      `Successfully updated User with email : ${req.user.email}`
+    );
+  } catch (error) {
+    return responseWithStatus(res, error.message, 400);
+  }
+});
+
 module.exports = {
   getAllUsersHandler,
   getUserHandler,
@@ -202,4 +262,6 @@ module.exports = {
   updateUserHandler,
   loginUserHandler,
   getUserIdHandler,
+  forgotPasswordHandler,
+  resetPasswordHandler,
 };
