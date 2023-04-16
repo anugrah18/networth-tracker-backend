@@ -9,6 +9,7 @@ const {
   generateResetPasswordToken,
   generateToken,
 } = require("../utils/Auth/tokenUtils");
+const { sendEmail } = require("../utils/Email/Mailgun");
 
 //Get all users.
 const getAllUsersHandler = expressAsyncHandler(async (req, res) => {
@@ -211,9 +212,26 @@ const forgotPasswordHandler = expressAsyncHandler(async (req, res) => {
       const webDomain =
         process.env.PROD_FRONTEND_DNS || "http://localhost:3000";
       const resetUrl = `${webDomain}/forgot-password/${resetPasswordToken}`;
-      const msg = `Please click on the following link to reset your password : ${resetUrl}`;
+      const msg = `<h3>Please click on the following link to reset your password : ${resetUrl} </h3>`;
 
-      return res.json(msg);
+      const emailStatus = await sendEmail(
+        email,
+        "Reset password (My Financial App)",
+        msg
+      );
+      console.log(emailStatus);
+      if (emailStatus) {
+        return responseWithStatus(
+          res,
+          `Successfully sent email to ${email}`,
+          200
+        );
+      }
+      return responseWithStatus(
+        res,
+        `Could'nt send  password reset token to ${email}`,
+        500
+      );
     }
 
     return responseWithStatus(res, `${email} is not registered`, 404);
