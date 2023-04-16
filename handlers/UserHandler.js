@@ -219,7 +219,7 @@ const forgotPasswordHandler = expressAsyncHandler(async (req, res) => {
         "Reset password (My Financial Pal)",
         msg
       );
-      console.log(emailStatus);
+
       if (emailStatus) {
         return responseWithStatus(
           res,
