@@ -14,7 +14,7 @@ const sendEmail = async (toAddress, subject, message) => {
       from: process.env.NODEMAILER_SEND_EMAIL,
       to: `${toAddress}`,
       subject: `${subject}`,
-      text: `${message}`,
+      html: `${message}`,
     };
 
     const status = await transporter.sendMail(mailoptions);
