@@ -9,7 +9,7 @@ const {
   generateResetPasswordToken,
   generateToken,
 } = require("../utils/Auth/tokenUtils");
-const { sendEmail } = require("../utils/Email/Mailgun");
+const { sendEmail } = require("../utils/Email/Nodemailer");
 
 //Get all users.
 const getAllUsersHandler = expressAsyncHandler(async (req, res) => {
