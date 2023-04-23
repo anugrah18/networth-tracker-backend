@@ -187,7 +187,13 @@ const loginUserHandler = expressAsyncHandler(async (req, res) => {
         lastName: userFound.lastName,
         email: userFound.email,
         isAdmin: userFound.isAdmin,
-        token: generateToken(userFound.userId),
+        token: generateToken({
+          id: userFound.userId,
+          firstName: userFound.firstName,
+          lastName: userFound.lastName,
+          email: userFound.email,
+          isAdmin: userFound.isAdmin,
+        }),
       };
       return res.json(user);
     }

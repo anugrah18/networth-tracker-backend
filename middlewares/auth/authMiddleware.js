@@ -14,7 +14,7 @@ const authMiddleware = expressAsyncHandler(async (req, res, next) => {
         const decoded = await jwt.verify(token, process.env.JWT_TOKEN_KEY);
 
         //find the user by ID
-        const user = await User.findByPk(decoded.id, {
+        const user = await User.findByPk(decoded.user.id, {
           attributes: ["userId", "firstName", "lastName", "email", "isAdmin"],
         });
 
