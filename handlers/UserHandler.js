@@ -56,11 +56,11 @@ const getUserHandler = expressAsyncHandler(async (req, res) => {
   }
 });
 
-//Get user ID
+//Get user ID and other details.
 const getUserIdHandler = expressAsyncHandler(async (req, res) => {
   try {
-    const userId = req?.user?.userId;
-    return res.json({ userId: userId });
+    const { userId, firstName, lastName, email, isAdmin } = req?.user;
+    return res.json({ userId: userId, firstName, lastName, email, isAdmin });
   } catch (error) {
     return responseWithStatus(res, error.message, 400);
   }
