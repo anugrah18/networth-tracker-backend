@@ -121,7 +121,13 @@ const updateRecordHandler = expressAsyncHandler(async (req, res) => {
 //Get all inflation data.
 const getInflationHandler = expressAsyncHandler(async (req, res) => {
   try {
-    const { startyear, endyear } = req.body;
+    let { startyear, endyear } = req.body;
+
+    //API limits the year difference to be 19 years.
+    if (endyear - startyear >= 20) {
+      startyear = endyear - 19;
+    }
+
     const inflation_final = [];
 
     const req_body = {
@@ -130,7 +136,7 @@ const getInflationHandler = expressAsyncHandler(async (req, res) => {
       endyear: String(endyear),
       catalog: false,
       calculations: false,
-      annualaverage: true,
+      annualaverage: false,
       aspects: false,
       registrationkey: process.env["INFLATION_DATA_KEY"],
     };
