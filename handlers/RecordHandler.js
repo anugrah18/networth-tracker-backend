@@ -118,9 +118,64 @@ const updateRecordHandler = expressAsyncHandler(async (req, res) => {
   }
 });
 
+//Get all inflation data.
+const getInflationHandler = expressAsyncHandler(async (req, res) => {
+  try {
+    let { startyear, endyear } = req.body;
+
+    //API limits the year difference to be 19 years.
+    if (endyear - startyear >= 20) {
+      startyear = endyear - 19;
+    }
+
+    const inflation_final = [];
+
+    const req_body = {
+      seriesid: ["CUUR0000SA0"],
+      startyear: String(startyear),
+      endyear: String(endyear),
+      catalog: false,
+      calculations: false,
+      annualaverage: false,
+      aspects: false,
+      registrationkey: process.env["INFLATION_DATA_KEY"],
+    };
+
+    // Get inflation data from bls api.
+    const resp = await fetch(
+      "https://api.bls.gov/publicAPI/v1/timeseries/data/",
+      {
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+        method: "POST",
+        body: JSON.stringify(req_body),
+      }
+    );
+    const content = await resp.json();
+    const inflation_data = content.Results.series[0].data;
+
+    //santize the data.
+    for (let i = 0; i < inflation_data.length; i++) {
+      inflation_final.push({
+        year: inflation_data[i].year,
+        month: inflation_data[i].periodName,
+        value: inflation_data[i].value,
+        latest: inflation_data[i].latest !== undefined ? true : false,
+      });
+    }
+
+    return res.json({ inflation_final });
+  } catch (error) {
+    return responseWithStatus(res, error.message, 400);
+  }
+});
+
 module.exports = {
   getAllRecordsHandler,
   createRecordHandler,
   deleteRecordHandler,
   updateRecordHandler,
+  getInflationHandler,
 };
